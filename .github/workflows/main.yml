@@ -20,6 +20,8 @@ jobs:
         with:
           java-version: '21'  # Set the Java version as per your server
           distribution: 'temurin' # Use 'temurin' instead of 'adoptopenjdk'
+
+      # Make mvnw executable
       - name: Make mvnw executable
         run: chmod +x mvnw
 
@@ -38,29 +40,29 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_ed25519
 
-     
       # Transfer WAR file to the server
       - name: Transfer WAR file to the server
         run: |
           echo "Transferring WAR file to the server..."
-          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.war ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/opt/tomcat/apache-tomcat-9.0.97/webapps/
+          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.war ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/tmp/
 
       # Deploy the WAR file to Tomcat
-      - name: Deploy to Tomcat
+      - name: Deploy application to Tomcat
         run: |
           echo "Deploying application to Tomcat..."
-          ssh -p 2222 ${SERVER_USER}@${SERVER_IP} << EOF
+          ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }} << EOF
             echo "Stopping Tomcat server..."
             sudo systemctl stop tomcat
-          
+
             echo "Cleaning up old files..."
             sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT/*
-          
-            echo "Copying new WAR file..."
-            sudo mv /tmp/*.war /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.war
-          
+
+            echo "Deploying the new WAR file..."
+            sudo cp /tmp/demo-0.0.1-SNAPSHOT.war /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.war
+
             echo "Starting Tomcat server..."
             sudo systemctl start tomcat
-          
+
             echo "Deployment completed successfully!"
           EOF
+
