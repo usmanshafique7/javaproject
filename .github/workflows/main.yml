@@ -43,7 +43,7 @@ jobs:
       - name: Transfer WAR file to the server
         run: |
           echo "Transferring WAR file to the server..."
-          scp -P 2222 -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey -i ~/.ssh/id_ed25519 target/*.war ${SERVER_USER}@${SERVER_IP}:/tmp/
+          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.war ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/opt/tomcat/apache-tomcat-9.0.97/webapps/
 
       # Deploy the WAR file to Tomcat
       - name: Deploy to Tomcat
