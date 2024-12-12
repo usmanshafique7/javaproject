@@ -31,12 +31,14 @@ jobs:
       - name: Add SSH key to known hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 2222 ${SERVER_IP} >> ~/.ssh/known_hosts
+          ssh-keyscan -p ${{ secrets.SERVER_SSH_PORT }} ${{ secrets.SERVER_SSH_IP }} >> ~/.ssh/known_hosts
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_ed25519
 
+     
       # Transfer WAR file to the server
       - name: Transfer WAR file to the server
         run: |
