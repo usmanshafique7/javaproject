@@ -1,0 +1,62 @@
+name: Deploy Build to Tomcat
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Java (OpenJDK 21) for your project
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'  # Set the Java version as per your server
+          distribution: 'adoptopenjdk'
+
+      # Build the project using Maven
+      - name: Build with Maven
+        run: ./mvnw clean package
+
+      # Add SSH key to known hosts and set up SSH
+      - name: Add SSH key to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2222 ${SERVER_IP} >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519
+
+      # Transfer WAR file to the server
+      - name: Transfer WAR file to the server
+        run: |
+          echo "Transferring WAR file to the server..."
+          scp -P 2222 -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey -i ~/.ssh/id_ed25519 target/*.war ${SERVER_USER}@${SERVER_IP}:/tmp/
+
+      # Deploy the WAR file to Tomcat
+      - name: Deploy to Tomcat
+        run: |
+          echo "Deploying application to Tomcat..."
+          ssh -p 2222 ${SERVER_USER}@${SERVER_IP} << EOF
+            echo "Stopping Tomcat server..."
+            sudo systemctl stop tomcat
+          
+            echo "Cleaning up old files..."
+            sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT/*
+          
+            echo "Copying new WAR file..."
+            sudo mv /tmp/*.war /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.war
+          
+            echo "Starting Tomcat server..."
+            sudo systemctl start tomcat
+          
+            echo "Deployment completed successfully!"
+          EOF
