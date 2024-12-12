@@ -20,6 +20,8 @@ jobs:
         with:
           java-version: '21'  # Set the Java version as per your server
           distribution: 'temurin' # Use 'temurin' instead of 'adoptopenjdk'
+      - name: Make mvnw executable
+        run: chmod +x mvnw
 
       # Build the project using Maven
       - name: Build with Maven
