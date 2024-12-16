@@ -41,10 +41,10 @@ jobs:
           ssh-add ~/.ssh/id_ed25519
 
       # Transfer WAR file to the server
-      - name: Transfer JAR file to the server
+      - name: Transfer WAR file to the server
         run: |
-          echo "Transferring JAR file to the server..."
-          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/tmp/
+          echo "Transferring WAR file to the server..."
+          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.war ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/tmp/
 
       # Deploy the WAR file to Tomcat
       - name: Deploy application to Tomcat
@@ -57,8 +57,8 @@ jobs:
             echo "Cleaning up old files..."
             sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT/*
 
-            echo "Deploying the new JAR file..."
-            sudo cp /tmp/demo-0.0.1-SNAPSHOT.jar /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.jar
+            echo "Deploying the new WAR file..."
+            sudo cp /tmp/demo-0.0.1-SNAPSHOT.war /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.war
 
             echo "Starting Tomcat server..."
             sudo systemctl start tomcat
