@@ -55,10 +55,10 @@ jobs:
             sudo systemctl stop tomcat
 
             echo "Cleaning up old files..."
-            sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps
+            sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps//ROOT/*
 
             echo "Deploying the new JAR file..."
-            sudo cp /tmp/demo-0.0.1-SNAPSHOT.jar /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.jar
+            sudo cp /tmp/demo-0.0.1-SNAPSHOT.jar /opt/tomcat/apache-tomcat-9.0.97/webapps
 
             echo "Starting Tomcat server..."
             sudo systemctl start tomcat
