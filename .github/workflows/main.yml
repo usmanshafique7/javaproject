@@ -44,7 +44,7 @@ jobs:
       - name: Transfer JAR file to the server
         run: |
           echo "Transferring JAR file to the server..."
-          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.war ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/tmp/
+          scp -P ${{ secrets.SERVER_SSH_PORT }} -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 target/demo-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_SSH_IP }}:/tmp/
 
       # Deploy the WAR file to Tomcat
       - name: Deploy application to Tomcat
