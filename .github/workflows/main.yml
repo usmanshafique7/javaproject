@@ -55,7 +55,7 @@ jobs:
             sudo systemctl stop tomcat
 
             echo "Cleaning up old files..."
-            sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT/*
+            sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps/
 
             echo "Deploying the new WAR file..."
             sudo cp /tmp/demo-0.0.1-SNAPSHOT.war /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.war
