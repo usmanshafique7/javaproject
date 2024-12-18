@@ -15,4 +15,3 @@ public class HelloController {
         return "Hello, World! Welcome to your first API! test3";
     }
 }
-
