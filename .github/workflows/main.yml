@@ -55,14 +55,13 @@ jobs:
             sudo systemctl stop tomcat
 
             echo "Cleaning up old files..."
-            sudo rm -rf /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT/*
+            sudo rm -rf /usr/local/tomcat/apache-tomcat-10.1.34/webapps/ROOT/*
 
             echo "Deploying the new WAR file..."
-            sudo cp /tmp/demo-0.0.1-SNAPSHOT.war /opt/tomcat/apache-tomcat-9.0.97/webapps/ROOT.war
+            sudo cp /tmp/demo-0.0.1-SNAPSHOT.war /usr/local/tomcat/apache-tomcat-10.1.34/webapps/ROOT.war
 
             echo "Starting Tomcat server..."
             sudo systemctl start tomcat
 
             echo "Deployment completed successfully!"
           EOF
-
