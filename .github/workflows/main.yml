@@ -1,4 +1,4 @@
-name: Deploy Build to Tomcat
+name: Deploy Build to tTomcat
 
 on:
   push:
