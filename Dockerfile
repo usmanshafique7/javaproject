@@ -1,4 +1,4 @@
-# Use OpenJDK 17 as the base image
+﻿# Use OpenJDK 17 as the base imag
 FROM openjdk:17-jdk-slim
 
 # Set the working directory inside the container
